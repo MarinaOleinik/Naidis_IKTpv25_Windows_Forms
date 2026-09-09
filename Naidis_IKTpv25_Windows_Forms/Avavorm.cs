@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;    
@@ -16,6 +17,8 @@ namespace Naidis_IKTpv25_Windows_Forms
         TextBox tbox;
         TabControl tabs;
         TabPage tab1, tab2, tab3;
+        ListBox lb;
+
         public Avavorm()
         {
             Height = 600;
@@ -33,7 +36,9 @@ namespace Naidis_IKTpv25_Windows_Forms
             tn.Nodes.Add(new TreeNode("Radionupp"));
             tn.Nodes.Add(new TreeNode("Tekstiväli"));
             tn.Nodes.Add(new TreeNode("Vahekaardid"));
-
+            tn.Nodes.Add(new TreeNode("ListBox")); // loetelu
+            tn.Nodes.Add(new TreeNode("DataGridView")); // tabel
+            tn.Nodes.Add(new TreeNode("MainMenu")); // menüü
 
             tree.Nodes.Add(tn);
             //nupp, silt ja pilt
@@ -232,9 +237,87 @@ namespace Naidis_IKTpv25_Windows_Forms
                 Controls.Add(tabs);
                 tree.SelectedNode = null;
             }
+            else if (e.Node.Text == "ListBox")
+            {
+                lb = new ListBox();
+                lb.Items.Add("Roheline");
+                lb.Items.Add("Sinine");
+                lb.Items.Add("Kollane");
+                lb.Items.Add("Punane");
+                lb.Location = new Point(150, 50);
+                lb.SelectedIndexChanged += new EventHandler(Lb_SelectedIndexChanged);
+                Controls.Add(lb);
+            }
+            else if (e.Node.Text== "DataGridView")
+            {
+                DataSet ds = new DataSet("XML fail"); // loeb faili
+                ds.ReadXml(@"..\..\menu.xml");
+                DataGridView dg = new DataGridView();
+                dg.Width = 490;
+                dg.Height = 150;
+                dg.Location = new Point(500, 400);
+                dg.AutoGenerateColumns = true;
+                dg.DataSource = ds;
+                dg.DataMember = "food";
+                Controls.Add(dg);
+            }
+            else if(e.Node.Text == "MainMenu")
+            {
+                MainMenu menu = new MainMenu();
+                MenuItem menuFile = new MenuItem("File");
+                MenuItem menuOpen = new MenuItem("&Open", new EventHandler(menuFile_Open), Shortcut.CtrlO);
+                menuFile.MenuItems.Add(menuOpen);
+                MenuItem menuClear = new MenuItem("&Clear Form", new EventHandler(menuFile_Clear), Shortcut.CtrlC);
+                menuFile.MenuItems.Add(menuClear);
+                MenuItem menuClearTabs = new MenuItem("&Clear Tabs", new EventHandler(menuFile_ClearTabs), Shortcut.CtrlT);
+                menuFile.MenuItems.Add(menuClearTabs);
+                MenuItem menuExit = new MenuItem("&Exit", new EventHandler(menuFile_Exit), Shortcut.CtrlQ);
+                menuFile.MenuItems.Add(menuExit);
+                
+                menu.MenuItems.Add(menuFile);
+                Menu = menu;
+            }
         }
 
+        private void menuFile_ClearTabs(object sender, EventArgs e)
+        {
+            tabs.Hide();
+            
+        }
+        private void menuFile_Clear(object sender, EventArgs e)
+        {
+            Controls.Clear();
+        }
 
+        private void menuFile_Open(object sender, EventArgs e)
+        {
+            OpenForm();
+        }
+        private void OpenForm()
+        {
+            Form uusvorm = new Form();
+            uusvorm.Text = "UUS VORM";
+            uusvorm.Size = new Size(300, 300);
+            uusvorm.StartPosition = FormStartPosition.CenterParent;
+            uusvorm.Show();
+        }
+        private void menuFile_Exit(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void Lb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (lb.SelectedItem.ToString())
+            {
+                case "Roheline": tree.BackColor = Color.Green; break;
+                case "Sinine": tree.BackColor = Color.Blue; break;
+                case "Kollane": tree.BackColor = Color.Yellow; break;
+                case "Punane": tree.BackColor = Color.Red; break;
+                default:
+                    break;
+            }
+        }
 
         private void Rnupp_CheckedChanged(object sender, EventArgs e)
         {
