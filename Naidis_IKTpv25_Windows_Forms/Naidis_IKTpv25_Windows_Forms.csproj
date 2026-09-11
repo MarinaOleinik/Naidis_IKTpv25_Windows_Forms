@@ -53,6 +53,12 @@
     <Compile Include="Avavorm.Designer.cs">
       <DependentUpon>Avavorm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Alamvorm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Peavorm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Avavorm.resx">
